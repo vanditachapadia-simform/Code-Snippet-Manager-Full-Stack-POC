@@ -1,0 +1,29 @@
+<div class="mb-3 d-flex align-items-center gap-2 flex-wrap bg-light p-3 rounded shadow-sm">
+  <input class="form-control me-2" style="max-width: 250px;" [(ngModel)]="search" (ngModelChange)="onSearch($event)" placeholder="Search snippets...">
+  <input class="form-control" style="max-width: 200px;" [(ngModel)]="languageFilter" (ngModelChange)="onFilterLanguage($event)" placeholder="Filter by language">
+  <button class="btn btn-success ms-2" (click)="showForm = true; selectedSnippet = null">
+    <i class="bi bi-plus-circle me-1"></i> Add Snippet
+  </button>
+</div>
+
+<app-form *ngIf="showForm"
+  [fields]="formFields"
+  [submitLabel]="selectedSnippet ? 'Update' : 'Create'"
+  [initialValues]="selectedSnippet || {}"
+  (formSubmit)="selectedSnippet ? onUpdate($event) : onCreate($event)"
+  (close)="onCancel()"
+  class="mb-4">
+</app-form>
+
+<app-table
+  [columns]="tableColumns"
+  [data]="snippets | snippetSearch:search | snippetLanguage:languageFilter"
+  [pageSize]="pageSize"
+  (rowClick)="onEdit($event)"
+  (delete)="onDelete($event)"
+  (copy)="copyCode($event)"
+  (share)="shareCode($event)"
+  class="bg-white rounded shadow-sm border border-1">
+</app-table>
+
+<app-toast [message]="toastMsg" [type]="toastType" [show]="showToast"></app-toast>
